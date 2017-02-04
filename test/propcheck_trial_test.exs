@@ -44,6 +44,8 @@ defmodule PropcheckTrialTest do
 
       IO.puts "Finished single sequence. Result: #{inspect result}"
 
+      PropcheckTrial.Repo.delete_all(PropcheckTrial.Book)
+
       (result == :ok)
       |> when_fail(
         IO.puts """
