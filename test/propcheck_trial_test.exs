@@ -18,7 +18,7 @@ defmodule PropcheckTrialTest do
 
   def precondition(_state, _command), do: true
 
-  def postcondition(state, {:call, PropcheckTrial.Book, :add, [title]}, _command_result) do
+  def postcondition(state, {:call, PropcheckTrial.Book, :add, [_title]}, _command_result) do
     books_in_my_model = length(state[:books])
     books_in_real_db = PropcheckTrial.Repo.one(from b in PropcheckTrial.Book, select: count(1))
 
