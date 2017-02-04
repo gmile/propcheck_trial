@@ -21,6 +21,9 @@ defmodule PropcheckTrialTest do
   def postcondition(state, {:call, PropcheckTrial.Book, :add, [title]}, result) do
     books_in_my_model = length(state[:books])
     books_in_real_db = PropcheckTrial.Repo.one(from b in PropcheckTrial.Book, select: count(1))
+
+    IO.inspect books_in_my_model, label: "in mem"
+    IO.inspect books_in_real_db, label: "in db"
     
     books_in_my_model == books_in_real_db
   end
