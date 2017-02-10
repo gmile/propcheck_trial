@@ -18,14 +18,13 @@ defmodule PropcheckTrialTest do
 
   def precondition(_state, _command), do: true
 
-  def postcondition(state, {:call, PropcheckTrial.Book, :add, [_title]}, _command_result) do
+  def postcondition(state, {:call, PropcheckTrial.Book, :add, [_title]}, command_result) do
+    IO.inspect command_result
+
     books_in_my_model = length(state[:books])
     books_in_real_db = PropcheckTrial.Repo.one(from b in PropcheckTrial.Book, select: count(1))
-
-    IO.inspect books_in_my_model, label: "in mem"
-    IO.inspect books_in_real_db, label: "in db"
     
-    books_in_my_model == books_in_real_db
+    books_in_my_model == books_in_real_db - 1
   end
 
   def next_state(state, _command_result, {:call, PropcheckTrial.Book, :add, [title]}) do
@@ -41,8 +40,6 @@ defmodule PropcheckTrialTest do
   property "propcheck works fine" do
     sequence = forall cmds <- commands(__MODULE__) do
       {history, state, result} = run_commands(__MODULE__, cmds)
-
-      IO.puts "Finished single sequence. Result: #{inspect result}"
 
       PropcheckTrial.Repo.delete_all(PropcheckTrial.Book)
 
